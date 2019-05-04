@@ -1,4 +1,4 @@
-##学生选课推荐系统
+## 学生选课推荐系统
 
 ### 1.使用的技术
 后端：SpringBoot + MyBatis + Shiro
