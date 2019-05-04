@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codeliu.course_select_system.dao.TeacherMapper" >
+
+    <!--获取教师总人数-->
+    <select id="getCountTeacher" resultType="int">
+        select count(*) from teacher
+    </select>
+
+    <!--查询所有教师，以分页的形式-->
+    <select id="getTeacherList" parameterType="pageVO" resultType="Map">
+        select teacher_id, teacher_name, teacher_sex, teacher_birth_year, teacher_degree,
+               teacher_title, teacher_grade, college.college_name
+        from teacher, college
+        WHERE teacher.college_id = college.college_id
+        limit #{toPageNo}, #{pageSize}
+    </select>
+
+    <!--用户名搜索教师-->
+    <select id="findByTeacName" resultType="Map">
+        select teacher_id, teacher_name, teacher_sex, teacher_birth_year, teacher_degree,
+               teacher_title, teacher_grade, college.college_name
+        from teacher, college
+        where teacher.college_id = college.college_id
+          and teacher_name like '%' #{teacherName} '%'
+    </select>
+
+    <!--添加教师-->
+    <insert id="addTeacher" parameterType="teacher">
+        insert into teacher values(#{teacherId}, #{teacherName}, #{teacherSex}, #{teacherBirthYear},
+                                   #{teacherDegree}, #{teacherTitle}, #{teacherGrade}, #{collegeId})
+    </insert>
+
+    <!--通过教师id查找教师-->
+    <select id="getTeacById" resultType="string">
+        select teacher_id from teacher
+        <where>
+            teacher_id = #{teacherId}
+        </where>
+    </select>
+
+    <!--通过教师id查询教师所有信息-->
+    <select id="getTeacInfoById" resultType="teacher">
+        select teacher_id, teacher_name, teacher_sex, teacher_birth_year, teacher_degree,
+               teacher_title, teacher_grade, teacher.college_id
+        from teacher
+        WHERE teacher_id = #{teacherId}
+    </select>
+
+    <!--更新教师信息-->
+    <update id="updateTeac" parameterType="teacher">
+        update teacher set teacher_name = #{teacherName}, teacher_sex = #{teacherSex},
+        teacher_birth_year = #{teacherBirthYear}, teacher_degree = #{teacherDegree},
+        teacher_title = #{teacherTitle}, teacher_grade = #{teacherGrade}, college_id = #{collegeId}
+        <where>
+            teacher_id = #{teacherId}
+        </where>
+    </update>
+
+    <!--删除教师信息-->
+    <delete id="deleteTeac">
+        delete from teacher
+        <where>
+            teacher_id = #{teacherId}
+        </where>
+    </delete>
+
+    <!--获取教师id和名字-->
+    <select id="getTeacIdAndName" resultType="teacher">
+        select teacher_id, teacher_name from teacher
+    </select>
+
+    <!--通过教师id查找教师-->
+    <select id="getTeacByName" resultType="string">
+        select teacher_id from teacher
+        <where>
+            teacher_name = #{teacherName}
+        </where>
+    </select>
+</mapper>

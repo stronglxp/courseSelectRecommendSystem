@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codeliu.course_select_system.dao.SelectCourseMapper" >
+
+    <select id="isSelect" resultType="map">
+        select course_id from select_course
+        <where>
+            course_id = #{courseId}
+        </where>
+        limit 1
+    </select>
+
+    <!--删除指定学生选的课程-->
+    <delete id="delCourse" parameterType="string">
+        delete from select_course
+        <where>
+            student_id = #{studentId}
+        </where>
+    </delete>
+
+    <!--获取某门课程的学生成绩列表-->
+    <select id="getMarkList" resultType="map">
+        select select_course.student_id, course_id, stu_name, mark from select_course
+        inner join student on student.stu_id = select_course.student_id
+        <where>
+            course_id = #{courseId}
+        </where>
+        order by mark desc limit #{toPageNo}, #{pageSize}
+    </select>
+
+    <!--获取数目, count不统计null列-->
+    <select id="getMarkNum" resultType="Integer">
+        select count(course_id) from select_course
+        inner join student on student.stu_id = select_course.student_id
+        <where>
+            course_id = #{courseId}
+        </where>
+    </select>
+
+    <!--打分-->
+    <update id="addMark" parameterType="selectCourse">
+        update select_course set mark = #{mark}
+        <where>
+            course_id = #{courseId} and student_id = #{studentId}
+        </where>
+    </update>
+
+    <!--获取某个学生的已选课程列表-->
+    <select id="getSelectCourseList" resultType="Map">
+        select select_course.course_id, course_code, course_name, teacher_name,
+               course_time, class_room, course_week, course_type, college.college_name, score
+        from course inner join select_course on select_course.course_id = course.course_id
+        and select_course.student_id = #{studentId} and mark is null
+        inner join teacher on course.teacher_id = teacher.teacher_id
+        inner join college on course.college_id = college.college_id
+        limit #{toPageNo}, #{pageSize}
+    </select>
+
+    <!--获取某个学生的已选课程数目-->
+    <select id="getSelectCourseNum" resultType="Integer">
+        select count(course_id)
+        from select_course
+        <where>
+            student_id = #{studentId} and mark is null
+        </where>
+    </select>
+
+    <!--搜索某个学生的已选课程列表-->
+    <select id="selectCourseList" resultType="Map">
+        select select_course.course_id, course_code, course_name, teacher_name,
+               course_time, class_room, course_week, course_type, college.college_name, score
+        from course inner join select_course on select_course.course_id = course.course_id
+            and select_course.student_id = #{studentId} and mark is null
+          and course_name like '%' #{courseName} '%'
+                    inner join teacher on course.teacher_id = teacher.teacher_id
+                    inner join college on course.college_id = college.college_id
+    </select>
+
+    <!--批量插入选课记录-->
+    <insert id="addRecord">
+        insert into select_course(course_id, student_id) values 
+        <foreach collection="stuIdList" item="stuId" separator=",">
+            (#{courseId}, #{stuId})
+        </foreach>
+    </insert>
+
+    <!--插入一条选课记录-->
+    <insert id="addOneRecord">
+        insert into select_course(course_id, student_id)
+        values(#{courseId}, #{studentId})
+    </insert>
+
+    <!--退课,只能退没有分数的课程-->
+    <delete id="outCourse">
+        delete from select_course
+        <where>
+            course_id = #{courseId} and student_id = #{studentId} and mark is null
+        </where>
+    </delete>
+
+    <!--获取某个学生的已修课程列表-->
+    <select id="getOverCourseList" resultType="Map">
+        select select_course.course_id, course_code, course_name, teacher_name,
+               course_time, class_room, course_week, course_type, college.college_name, score, mark, evaluation
+        from course inner join select_course on select_course.course_id = course.course_id
+            and select_course.student_id = #{studentId} and mark is not null
+                    inner join teacher on course.teacher_id = teacher.teacher_id
+                    inner join college on course.college_id = college.college_id
+        limit #{toPageNo}, #{pageSize}
+    </select>
+
+    <!--获取某个学生的已修课程数目-->
+    <select id="getOverCourseNum" resultType="Integer">
+        select count(course_id)
+        from select_course
+        <where>
+            student_id = #{studentId} and mark is not null
+        </where>
+    </select>
+
+    <!--搜索某个学生的已修课程列表-->
+    <select id="selectOverCourseList" resultType="Map">
+        select select_course.course_id, course_code, course_name, teacher_name,
+               course_time, class_room, course_week, course_type, college.college_name, score, mark, evaluation
+        from course inner join select_course on select_course.course_id = course.course_id
+            and select_course.student_id = #{studentId} and mark is not null
+            and course_name like '%' #{courseName} '%'
+                    inner join teacher on course.teacher_id = teacher.teacher_id
+                    inner join college on course.college_id = college.college_id
+    </select>
+
+    <!--某个学生给某门已修的课程评分-->
+    <update id="addEvaluation" parameterType="selectCourse">
+        update select_course set evaluation = #{evaluation}
+        <where>
+            course_id = #{courseId} and student_id = #{studentId} and mark is not null
+        </where>
+    </update>
+
+    <!--获取总评分最高的10门课程(当前用户没有选修过的)-->
+    <select id="getTopTenEvaCourse" resultType="Map">
+        select select_course.course_id, course_code, course_name, teacher_name,
+               course_time, class_room, course_week, course_type, college.college_name, score, sum(evaluation) as evaluation
+        from select_course inner join course on course.course_id = select_course.course_id
+            and course.is_on = 1 and course.course_type = "选修课" and select_course.mark is not null
+                           inner join teacher on course.teacher_id = teacher.teacher_id
+                           inner join college on college.college_id = course.college_id
+        group by select_course.course_id order by sum(evaluation) desc limit 10;
+    </select>
+
+    <!--获取总选修人数最高的10门课程(当前用户没有选修过的)-->
+    <select id="getTopTenNumCourse" resultType="Map">
+        select select_course.course_id, course_code, course_name, teacher_name,
+               course_time, class_room, course_week, course_type, college.college_name, score, count(student_id) as num
+        from select_course inner join course on course.course_id = select_course.course_id
+            and course.is_on = 1 and course.course_type = "选修课"
+                           inner join teacher on course.teacher_id = teacher.teacher_id
+                           inner join college on college.college_id = course.college_id
+        group by select_course.course_id order by count(student_id) desc limit 10;
+    </select>
+
+    <!--获取某个学生已选课程id列表-->
+    <select id="courseIdList" resultType="Integer">
+        select course_id from select_course
+        <where>
+            student_id = #{studentId}
+        </where>
+    </select>
+
+</mapper>

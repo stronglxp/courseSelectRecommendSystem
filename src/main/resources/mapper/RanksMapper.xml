@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codeliu.course_select_system.dao.RanksMapper" >
+
+    <!--获取评分数据-->
+    <select id="getRankList" resultType="map">
+        select student_id, course_id, rank from ranks
+    </select>
+
+    <update id="updateRank" parameterType="ranks">
+        update ranks set rank = rank + #{rank}
+        <where>
+            student_id = #{studentId}
+            and course_id = #{courseId}
+        </where>
+    </update>
+
+    <!--学生选课的时候插入，rank加1-->
+    <insert id="addRank" parameterType="ranks">
+        insert into ranks(student_id, course_id, rank) values(#{studentId}, #{courseId}, 1)
+    </insert>
+
+    <!--学生退课时进行删除-->
+    <delete id="deleteRank" parameterType="ranks">
+        delete from ranks
+        <where>
+            student_id = #{studentId}
+            and course_id = #{courseId}
+        </where>
+    </delete>
+</mapper>

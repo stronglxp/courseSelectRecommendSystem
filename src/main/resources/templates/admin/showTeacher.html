@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{../../static/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{../../static/css/bootstrap-theme.css}" rel="stylesheet">
+    <title>教师信息</title>
+</head>
+<body>
+    <!--顶部栏-->
+    <div th:replace="admin/top :: html"></div>
+    <!-- 中间主体 -->
+    <div class="container" id="content">
+        <div class="row">
+            <div th:replace="admin/menu :: html"></div>
+            <div class="col-md-10">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <h1 class="col-md-4">教师名单管理</h1>
+                            <form class="bs-example bs-example-form col-md-4" role="form" style="margin: 20px 0 10px
+                                 0;" th:action="@{/admin/selectTeacher}" id="form1" method="post">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="请输入姓名" name="teacherName" required>
+                                    <span class="input-group-btn">
+                                        <input type="submit" class="btn btn-default" value="搜索" />
+                                    </span>
+                                </div>
+                            </form>
+                            <button class="btn btn-default col-md-2" style="margin-top: 20px">
+                                <a th:href="@{/admin/addTeacher}" style="color: black; text-decoration: none">
+                                    添加教师信息<sapn class="glyphicon glyphicon-plus"/>
+                                </a>
+                            </button>
+                            <button class="btn btn-default col-md-2" style="margin-top: 20px">
+                                <a data-toggle="modal" href="#uploadTeacher" role="button"
+                                   style="color: black; text-decoration: none">
+                                    批量添加<sapn class="glyphicon glyphicon-plus"/>
+                                </a>
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>工号</th>
+                                <th>姓名</th>
+                                <th>性别</th>
+                                <th>出生年份</th>
+                                <th>学历</th>
+                                <th>职称</th>
+                                <th>入职时间</th>
+                                <th>院系</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody th:if="${#lists.isEmpty(teacherList)}">
+                            <tr style="text-align: center; color: red;">
+                                <td colspan="9">没有教师信息</td>
+                            </tr>
+                        </tbody>
+                        <tbody th:if="${not #lists.isEmpty(teacherList)}">
+                            <th:block th:each="teacher:${teacherList}">
+                                <tr>
+                                    <!--遍历map-->
+                                    <td th:text="${teacher['teacher_id']}">0</td>
+                                    <td th:text="${teacher['teacher_name']}">0</td>
+                                    <td th:text="${teacher['teacher_sex']}">0</td>
+                                    <td th:text="${teacher['teacher_birth_year']}">0</td>
+                                    <td th:text="${teacher['teacher_degree']}">0</td>
+                                    <td th:text="${teacher['teacher_title']}">0</td>
+                                    <td th:text="${teacher['teacher_grade']}">0</td>
+                                    <td th:text="${teacher['college_name']}">0</td>
+                                    <td>
+                                        <button class="btn btn-xs btn-default btn-info">
+                                            <a th:href="@{'/admin/editTeacher?id=' + ${teacher['teacher_id']}}"
+                                               style="text-decoration: none; color: white; font-weight: lighter">
+                                                修改
+                                            </a>
+                                        </button>
+                                        <button class="btn btn-xs btn-default btn-danger btn-primary">
+                                            <a th:onclick="passId([[${teacher['teacher_id']}]]);"
+                                                data-toggle="modal" href="#sureDel" role="button"
+                                                style="text-decoration: none; color: white; font-weight: lighter">
+                                                删除
+                                            </a>
+                                        </button>
+                                        <!--弹出框-->
+                                    </td>
+                                </tr>
+                            </th:block>
+                        </tbody>
+                    </table>
+                    <div class="panel-footer" th:if="${pageVo}">
+                        <nav style="text-align: center">
+                            <ul class="pagination">
+                                <li>
+                                    <a th:href="@{'/admin/teacher/list?page=' + ${pageVo.prePageNo}}">&laquo;
+                                        上一页</a>
+                                </li>
+                                <li class="active">
+                                    <a href="" th:value="${pageVo.currentPageNo}" th:text="${pageVo.currentPageNo}">1</a>
+                                </li>
+
+                                <li th:if="${pageVo.currentPageNo + 1 <= pageVo.totalCount}">
+                                    <a th:href="@{'/admin/teacher/list?page=' + ${pageVo.currentPageNo + 1}}"
+                                       th:text="${pageVo.currentPageNo+1}">2</a>
+                                </li>
+                                <li th:if="${pageVo.currentPageNo + 2 <= pageVo.totalCount}">
+                                    <a th:href="@{'/admin/teacher/list?page=' + ${pageVo.currentPageNo + 2}}"
+                                       th:text="${pageVo.currentPageNo + 2}">3</a>
+                                </li>
+                                <li th:if="${pageVo.currentPageNo + 3 <= pageVo.totalCount}">
+                                    <a th:href="@{'/admin/teacher/list?page=' + ${pageVo.currentPageNo + 3}}"
+                                       th:text="${pageVo.currentPageNo + 3}">4</a>
+                                </li>
+                                <li th:if="${pageVo.currentPageNo + 4 <= pageVo.totalCount}">
+                                    <a th:href="@{'/admin/teacher/list?page=' + ${pageVo.currentPageNo + 4}}"
+                                       th:text="${pageVo.currentPageNo + 4}">5</a>
+                                </li>
+                                <li>
+                                    <a th:href="@{'/admin/teacher/list?page=' + ${pageVo.totalCount}}">最后一页&raquo;</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" id="footer">
+        <div class="row">
+            <div class="col-md-12"></div>
+        </div>
+    </div>
+
+    <!--是否删除模态框-->
+    <div class="modal fade" tabindex="-1" role="dialog" id="sureDel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form class="form-horizontal" role="form" th:action="@{/admin/removeTeacher}" method="post">
+                    <input type="hidden" name="teacherId" id="id" value=""/>
+                    <div class="modal-body">
+                        <p>确认删除？</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="submit" class="btn btn-danger">删除</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--批量添加模态框-->
+    <div class="modal fade" tabindex="-1" role="dialog" id="uploadTeacher">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form class="form-horizontal" role="form" th:action="@{/admin/upload/teacher}"
+                      enctype="multipart/form-data" method="post">
+                    <div class="modal-body">
+                        请选择文件:<input type="file" name="teacherFile">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="submit" class="btn btn-success">添加</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--消息模态框-->
+    <div class="modal fade" tabindex="-1" role="dialog" id="alertMsg">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p th:text="${msg}"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="javascript:go();">关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{../../static/js/jquery-3.0.0.min.js}"></script>
+    <script th:src="@{../../static/js/bootstrap.js}"></script>
+    <script th:inline="javascript">
+
+        /*<![CDATA[*/
+
+        $("#nav li:nth-child(3)").addClass("active");
+
+        var msg = /*[[${msg}]]*/ null;
+
+        if(msg != null) {
+            // 显示信息
+            $('#alertMsg').modal('show');
+        }
+
+        // 跳转到接口
+        function go() {
+            window.location.href = "/admin/teacher/list";
+        }
+
+        // 传递教师的id
+        function passId(id) {
+            $("#id").val(id);
+        }
+        /*]]>*/
+
+    </script>
+</body>
+</html>

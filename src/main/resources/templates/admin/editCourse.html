@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{../../static/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{../../static/css/bootstrap-theme.css}" rel="stylesheet">
+    <title>修改课程</title>
+</head>
+<body>
+    <!--顶部栏-->
+    <div th:replace="admin/top :: html"></div>
+    <div class="container" id="content">
+        <div class="row">
+            <div th:replace="admin/menu :: html"></div>
+            <div class="col-md-10">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <h1 style="text-align: center;">修改课程信息</h1>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form" th:action="@{/admin/editCourse}"
+                              id="editfrom" method="post">
+                            <input type="hidden" class="form-control" name="courseId"
+                                   th:value="${course.courseId}">
+                            <div class="form-group">
+                                <label for="inputEmail2" class="col-sm-2 control-label">课程id</label>
+                                <div class="col-sm-10">
+                                    <!--设置为disabled，则无法传递这个输入框的值-->
+                                    <input type="text" class="form-control" id="inputEmail2" name="courseCode"
+                                           placeholder="请输入id" th:value="${course.courseCode}"
+                                           value="" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword2" class="col-sm-2 control-label">课程名称</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputPassword2" name="courseName"
+                                           placeholder="请输入课程名称" th:value="${course.courseName}"
+                                           value="CodeTiger" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword2" class="col-sm-2 control-label" name="grade">任课教师</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" name="teacherId" id="teacher">
+                                        <option th:each="teacher:${teacherList}"
+                                                th:value="${teacher.teacherId}" th:text="${teacher.teacherName}">
+                                            刘小平
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword2" class="col-sm-2 control-label">开课时间</label>
+                                <div class="col-sm-10">
+                                    <input type="date"  name="courseTime" class="form-control"
+                                           th:value="${#dates.format(course.courseTime, 'yyyy-MM-dd')}"
+                                           value="1996-01-01"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputDegree2" class="col-sm-2 control-label">开课地点</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputDegree2" name="classRoom"
+                                           placeholder="请输入开课地点" th:value="${course.classRoom}" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputTitle2" class="col-sm-2 control-label">学时</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputTitle2" name="courseWeek"
+                                           placeholder="请输入学时" th:value="${course.courseWeek}" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword2" class="col-sm-2 control-label">类型</label>
+                                <div class="col-sm-10">
+                                    <label class="checkbox-inline">
+                                        <input type="radio" name="courseType" value="必修课" checked>必修课
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input type="radio" name="courseType" value="选修课">选修课
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword2" class="col-sm-2 control-label" name="grade">所属院系</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" name="collegeId" id="college">
+                                        <option th:each="college:${collegeList}"
+                                                th:value="${college.collegeId}" th:text="${college.collegeName}">
+                                            计算机学院
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputTitle2" class="col-sm-2 control-label">学分</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="score"
+                                           placeholder="请输入学分" th:value="${course.score}" required>
+                                </div>
+                            </div>
+                            <div class="form-group" style="text-align: center">
+                                <button class="btn btn-success" type="submit">修改</button>
+                                <button class="btn btn-danger" type="reset">重置</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="container" id="footer">
+        <div class="row">
+            <div class="col-md-12"></div>
+        </div>
+    </div>
+
+    <!--消息模态框-->
+    <div class="modal fade" tabindex="-1" role="dialog" id="alertMsg">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p th:text="${msg}"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="javascript:go()">关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{../../static/js/jquery-3.0.0.min.js}"></script>
+    <script th:src="@{../../static/js/bootstrap.js}"></script>
+    <script th:inline="javascript">
+
+        /*<![CDATA[*/
+
+        $("#nav li:nth-child(1)").addClass("active");
+
+        var msg = /*[[${msg}]]*/ null;
+        var collegeId = /*[[${course.collegeId}]]*/ null;
+        var id = /*[[${course.courseId}]]*/ null;
+        var teacherId = /*[[${course.teacherId}]]*/ null;
+
+        if(msg != null) {
+            // 显示信息
+            $('#alertMsg').modal('show');
+        }
+
+        if(collegeId != null) {
+            // 把当前课程所属院系selected
+            var collegeSelect = $("#college option");
+            for (var i = 0; i < collegeSelect.length; i++) {
+                if (collegeSelect[i].value == collegeId) {
+                    collegeSelect[i].selected = true;
+                }
+            }
+        }
+
+        if(teacherId != null) {
+            // 把当前课程所属教师selected
+            var teacherSelect = $("#teacher option");
+            for (var i = 0; i < teacherSelect.length; i++) {
+                if (teacherSelect[i].value == teacherId) {
+                    teacherSelect[i].selected = true;
+                }
+            }
+        }
+
+        // 添加成功才跳转到教师列表页
+        function go () {
+            if(msg == '更新成功!') {
+                // 跳转到教师列表页接口
+                window.location.href = "/admin/course/list";
+            } else {
+                // 跳转到接口
+                window.location.href = "/admin/editCourse?id=" + id;
+            }
+        }
+        /*]]>*/
+
+
+    </script>
+</body>
+</html>

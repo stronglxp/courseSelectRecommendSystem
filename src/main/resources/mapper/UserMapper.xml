@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codeliu.course_select_system.dao.UserMapper" >
+
+    <sql id="field">
+        user_id, user_name, user_salt, user_password, role_id
+    </sql>
+
+    <!--根据用户名查找用户-->
+    <select id="findByName" resultType="user">
+        select <include refid="field" />
+        from user where user_name = #{username}
+    </select>
+
+    <!--增加一个用户-->
+    <insert id="addUser" parameterType="user">
+        insert into user(user_name, user_salt, user_password, role_id)
+              values(#{userName}, #{userSalt}, #{userPassword}, #{roleId})
+    </insert>
+
+    <!--删除一个用户,user_name是唯一的-->
+    <delete id="delUser">
+        delete from user
+        <where>
+            user_name = #{userName}
+        </where>
+    </delete>
+
+    <!--修改用户密码-->
+    <update id="updateUser" parameterType="user">
+        update user set user_salt = #{userSalt}, user_password = #{userPassword}
+        <where>
+            user_name = #{userName}
+        </where>
+    </update>
+
+</mapper>

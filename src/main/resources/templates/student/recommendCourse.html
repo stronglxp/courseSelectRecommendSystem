@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/static/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/static/css/bootstrap-theme.css}" rel="stylesheet">
+    <link th:href="@{/static/css/bootstrap-switch.css}" rel="stylesheet">
+    <title>推荐课程信息</title>
+</head>
+<body>
+    <!--顶部栏-->
+    <div th:replace="student/top :: html"></div>
+    <!-- 中间主体 -->
+    <div class="container" id="content">
+        <div class="row">
+            <div th:replace="student/menu :: html"></div>
+            <div class="col-md-10">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <h1 class="col-md-4">推荐课程</h1>
+                            <!--<form class="bs-example bs-example-form col-md-4" role="form" style="margin: 20px 0 10px-->
+                                 <!--0;" th:action="@{/student/selectRecommCourse}" id="form1" method="post">-->
+                                <!--<div class="input-group">-->
+                                    <!--<input type="text" class="form-control" placeholder="请输入课程名称" name="courseName" required>-->
+                                    <!--<span class="input-group-btn">-->
+                                        <!--<input type="submit" class="btn btn-default" value="搜索" />-->
+                                    <!--</span>-->
+                                <!--</div>-->
+                            <!--</form>-->
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="nav nav-pills" id="pick">
+                                    <li>
+                                        <a th:href="@{/student/multiple/course/list}">
+                                            综合推荐
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a th:href="@{/student/evaluate/course/list}">
+                                            按评分
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a th:href="@{/student/num/course/list}">
+                                            按人数
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                    </div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>课程id</th>
+                                <th>课程名称</th>
+                                <th>任课教师</th>
+                                <th>开课时间</th>
+                                <th>开课地点</th>
+                                <th>学时</th>
+                                <th>类型</th>
+                                <th>院系</th>
+                                <th>学分</th>
+                                <th th:if="${pick == 3}">总修人数</th>
+                                <th th:if="${pick == 2}">评分</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody th:if="${#lists.isEmpty(courseList)}">
+                            <tr style="text-align: center; color: red;">
+                                <td colspan="11">没有课程信息</td>
+                            </tr>
+                        </tbody>
+                        <tbody th:if="${not #lists.isEmpty(courseList)}">
+                            <th:block th:each="course:${courseList}">
+                                <tr>
+                                    <!--遍历map-->
+                                    <td th:text="${course['course_code']}">0</td>
+                                    <td th:text="${course['course_name']}">0</td>
+                                    <td th:text="${course['teacher_name']}">0</td>
+                                    <td th:text="${course['course_time']}">0</td>
+                                    <td th:text="${course['class_room']}">0</td>
+                                    <td th:text="${course['course_week']}">0</td>
+                                    <td th:text="${course['course_type']}">0</td>
+                                    <td th:text="${course['college_name']}">0</td>
+                                    <td th:text="${course['score']}">0</td>
+                                    <td th:if="${pick == 2}" th:text="${course['evaluation']}">0</td>
+                                    <td th:if="${pick == 3}" th:text="${course['num']}">0</td>
+                                    <td>
+                                        <button class="btn btn-xs btn-default btn-info">
+                                            <a th:onclick="passInfo([[${course['course_id']}]]);"
+                                               style="text-decoration: none; color: white; font-weight: lighter">
+                                                选课
+                                            </a>
+                                        </button>
+                                        <!--弹出框-->
+                                    </td>
+                                </tr>
+                            </th:block>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" id="footer">
+        <div class="row">
+            <div class="col-md-12"></div>
+        </div>
+    </div>
+
+    <!--消息模态框-->
+    <div class="modal fade" tabindex="-1" role="dialog" id="alertMsg1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <input type="hidden" name="courseId" id="courseId" value=""/>
+                <div class="modal-body">
+                    <p th:text="${msg}" id="msg1"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="javascript:go1();">确定
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--消息模态框-->
+    <div class="modal fade" tabindex="-1" role="dialog" id="alertMsg2">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p th:text="${msg}" id="msg2"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="javascript:go2();">关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/static/js/jquery-3.0.0.min.js}"></script>
+    <script th:src="@{/static/js/bootstrap.js}"></script>
+    <script th:src="@{/static/js/bootstrap-switch.js}"></script>
+    <script th:inline="javascript">
+
+        /*<![CDATA[*/
+
+        $("#nav li:nth-child(4)").addClass("active");
+
+        var msg = /*[[${msg}]]*/ null;
+        var pick = /*[[${pick}]]*/ null;
+
+        // 筛选框高亮
+        if(pick != null) {
+            $("#pick li:nth-child("+pick+")").addClass("active");
+        }
+
+
+        if(msg != null) {
+            // 显示信息
+            $('#alertMsg2').modal('show');
+        }
+
+        function passInfo(course_id) {
+            $('#courseId').val(course_id);
+            // 给模态框赋值
+            $('#msg1').text('您确定要选修该课程吗?');
+            $('#alertMsg1').modal('show');
+        }
+
+        // 跳转到接口
+        function go1() {
+
+            var courseId = $('#courseId').val();
+
+            $.post('/student/select/' + courseId, {},
+                function (data, status) {
+
+                    if(status == 'success') {
+                        if(data == 0) {
+                            // 给模态框赋值
+                            $('#msg2').text('选课成功!');
+                        } else if (data == 1) {
+                            // 给模态框赋值
+                            $('#msg2').text('课程出错!');
+                        } else if (data == -1) {
+                            // 给模态框赋值
+                            $('#msg2').text('选课失败!');
+                        }
+                    } else {
+                        // 给模态框赋值
+                        $('#msg2').text('选课失败!');
+                    }
+
+                    $('#alertMsg2').modal('show');
+
+                }
+            );
+        }
+
+        function go2() {
+            window.location.href = "/student/select/course/list";
+        }
+
+        /*]]>*/
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{../../static/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{../../static/css/bootstrap-theme.css}" rel="stylesheet">
+    <title>修改教师</title>
+</head>
+<body>
+    <!--顶部栏-->
+    <div th:replace="admin/top :: html"></div>
+    <div class="container" id="content">
+        <div class="row">
+            <div th:replace="admin/menu :: html"></div>
+            <div class="col-md-10">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <h1 style="text-align: center;">修改教师信息</h1>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form" th:action="@{/admin/editTeacher}"
+                              id="editfrom" method="post">
+                            <div class="form-group">
+                                <label for="inputEmail2" class="col-sm-2 control-label">工号</label>
+                                <div class="col-sm-10">
+                                    <!--设置为disabled，则无法传递这个输入框的值-->
+                                    <input type="text" class="form-control" id="inputEmail2" name="teacherId"
+                                           placeholder="请输入工号" th:value="${teacher.teacherId}"
+                                           value="" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword2" class="col-sm-2 control-label">姓名</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputPassword2" name="teacherName"
+                                           placeholder="请输入姓名" th:value="${teacher.teacherName}"
+                                           value="CodeTiger" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword2" class="col-sm-2 control-label">性别</label>
+                                <div class="col-sm-10">
+                                    <label class="checkbox-inline">
+                                        <input type="radio" name="teacherSex" value="男" checked>男
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input type="radio" name="teacherSex" value="女">女
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword2" class="col-sm-2 control-label">出生年份</label>
+                                <div class="col-sm-10">
+                                    <input type="date"  name="teacherBirthYear" class="form-control"
+                                           th:value="${#dates.format(teacher.teacherBirthYear, 'yyyy-MM-dd')}"
+                                        value="1996-01-01"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputDegree2" class="col-sm-2 control-label">学历</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputDegree2" name="teacherDegree"
+                                           placeholder="请输入学历" th:value="${teacher.teacherDegree}" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputTitle2" class="col-sm-2 control-label">职称</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputTitle2" name="teacherTitle"
+                                           placeholder="请输入职称" th:value="${teacher.teacherTitle}" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword2" class="col-sm-2 control-label" name="grade">入职时间</label>
+                                <div class="col-sm-10">
+                                    <input type="date" name="teacherGrade" class="form-control"
+                                           th:value="${#dates.format(teacher.teacherGrade, 'yyyy-MM-dd')}"
+                                        value="2015-01-01"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword2" class="col-sm-2 control-label" name="grade">所属院系</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" name="collegeId" id="college">
+                                        <option th:each="college:${collegeList}"
+                                                th:value="${college.collegeId}" th:text="${college.collegeName}">
+                                            计算机学院
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group" style="text-align: center">
+                                <button class="btn btn-success" type="submit">修改</button>
+                                <button class="btn btn-danger" type="reset">重置</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="container" id="footer">
+        <div class="row">
+            <div class="col-md-12"></div>
+        </div>
+    </div>
+
+    <!--消息模态框-->
+    <div class="modal fade" tabindex="-1" role="dialog" id="alertMsg">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p th:text="${msg}"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="javascript:go()">关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{../../static/js/jquery-3.0.0.min.js}"></script>
+    <script th:src="@{../../static/js/bootstrap.js}"></script>
+    <script th:inline="javascript">
+
+        /*<![CDATA[*/
+
+        $("#nav li:nth-child(3)").addClass("active");
+
+        var msg = /*[[${msg}]]*/ null;
+        var collegeId = /*[[${teacher.collegeId}]]*/ null;
+        var id = /*[[${teacher.teacherId}]]*/ null;
+
+        if(msg != null) {
+            // 显示信息
+            $('#alertMsg').modal('show');
+        }
+
+        if(collegeId != null) {
+            // 把当前教师所属院系selected
+            var collegeSelect = $("#college option");
+            for (var i = 0; i < collegeSelect.length; i++) {
+                if (collegeSelect[i].value == collegeId) {
+                    collegeSelect[i].selected = true;
+                }
+            }
+        }
+
+        // 添加成功才跳转到教师列表页
+        function go () {
+            if(msg == '更新成功!') {
+                // 跳转到教师列表页接口
+                window.location.href = "/admin/teacher/list";
+            } else {
+                // 跳转到接口
+                window.location.href = "/admin/editTeacher?id=" + id;
+            }
+        }
+        /*]]>*/
+
+
+    </script>
+</body>
+</html>

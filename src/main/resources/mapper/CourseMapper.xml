@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codeliu.course_select_system.dao.CourseMapper" >
+
+    <!--获取课程数-->
+    <select id="getCountCourse" resultType="int">
+        select count(*) from course
+    </select>
+
+    <!--查询所有课程，以分页的形式-->
+    <select id="getCourseList" parameterType="pageVO" resultType="Map">
+        select course_id, course_code, course_name, teacher_name, course_time, class_room,
+               course_week, course_type, college.college_name, score, is_on
+        from course inner join teacher on course.teacher_id = teacher.teacher_id
+        inner join college on course.college_id = college.college_id
+        limit #{toPageNo}, #{pageSize}
+    </select>
+
+    <!--课程名搜索课程-->
+    <select id="findByCourName" resultType="Map">
+        select course_id, course_code, course_name, teacher_name, course_time, class_room,
+               course_week, course_type, college.college_name, score, is_on
+        from course inner join teacher on course.teacher_id = teacher.teacher_id
+                    inner join college on course.college_id = college.college_id
+        where course_name like '%' #{courseName} '%'
+    </select>
+
+    <!--添加课程，并返回生成的主键-->
+    <insert id="addCourse" parameterType="course" useGeneratedKeys="true" keyProperty="courseId">
+        insert into course(course_code, course_name, teacher_id, course_time, class_room, course_week,
+                           course_type, college_id, score, is_on)
+        values(#{courseCode}, #{courseName}, #{teacherId}, #{courseTime},
+                                   #{classRoom}, #{courseWeek}, #{courseType}, #{collegeId}, #{score}, 0)
+    </insert>
+
+    <!--通过课程id查找课程-->
+    <select id="getCourById" resultType="integer">
+        select course_id from course
+        <where>
+            course_id = #{courseId}
+        </where>
+    </select>
+
+    <!--通过课程id查询课程所有信息-->
+    <select id="getCourInfoById" resultType="course">
+        select course_id, course_code, course_name, teacher_id, course_time, class_room,
+               course_week, course_type, score, course.college_id
+        from course
+        where course_id = #{courseId}
+    </select>
+
+    <!--更新课程信息-->
+    <update id="updateCour" parameterType="course">
+        update course set course_name = #{courseName}, teacher_id = #{teacherId},
+        course_time = #{courseTime}, class_room = #{classRoom}, course_week = #{courseWeek},
+        course_type = #{courseType}, score = #{score}, college_id = #{collegeId}
+        <where>
+            course_id = #{courseId}
+        </where>
+    </update>
+
+    <!--删除课程信息，有学生选的课程不能删除-->
+    <delete id="deleteCour">
+        delete from course
+        <where>
+            course_id = #{courseId}
+        </where>
+    </delete>
+
+    <!--通过三个条件查询course-->
+    <select id="getCourseByThree" resultType="integer" parameterType="course">
+        select course_id from course
+        <where>
+            course_code = #{courseCode} and course_name = #{courseName} and teacher_id = #{teacherId}
+        </where>
+    </select>
+
+    <!--开启选课功能-->
+    <update id="changeIsOn">
+        update course set is_on = #{isOn}
+        <where>
+            course_id = #{courseId}
+        </where>
+    </update>
+
+    <!--删除指定教师的课程-->
+    <delete id="delCourseByTec" parameterType="string">
+        delete from course
+        <where>
+            teacher_id = #{teacherId}
+        </where>
+    </delete>
+
+    <!--获取指定教师的课程，分页-->
+    <select id="getTeacCourseList" parameterType="string" resultType="Map">
+        select course_id, course_code, course_name, course_time, class_room,
+               course_week, course_type, college.college_name, score
+        from course inner join college on course.college_id = college.college_id
+        <where>
+            teacher_id = #{teacherId}
+        </where>
+    </select>
+
+    <!--获取某个教师教授的课程数目-->
+    <select id="getTeacCourseNum" parameterType="string" resultType="Integer">
+        select count(*) from course inner join college on course.college_id = college.college_id
+        <where>
+            teacher_id = #{teacherId}
+        </where>
+    </select>
+
+    <!--课程名搜索某个教师的课程-->
+    <select id="findTeacCourByName" resultType="Map">
+        select course_id, course_code, course_name, course_time, class_room,
+               course_week, course_type, college.college_name, score
+        from course inner join college on course.college_id = college.college_id
+        where course_name like '%' #{courseName} '%' and teacher_id = #{teacherId}
+    </select>
+
+    <!--查找所有已经开启选课的选修课-->
+    <select id="getOpenCourseList" resultType="Map">
+        select course_id, course_code, course_name, teacher_name, course_time, class_room,
+               course_week, course_type, college.college_name, score
+        from course inner join teacher on course.teacher_id = teacher.teacher_id
+                    inner join college on course.college_id = college.college_id
+        <where>
+            course_type = '选修课' and is_on = 1 and course_id not in(
+            select course_id from select_course where student_id = #{studentId})
+        </where>
+        limit #{toPageNo}, #{pageSize}
+    </select>
+
+    <!--获取开启的选修课数-->
+    <select id="getCountOpenCourse" resultType="Integer">
+        select count(course_id) from course
+        <where>
+            course_type = '选修课' and is_on = 1 and course_id not in(
+            select course_id from select_course where student_id = #{studentId})
+        </where>
+    </select>
+
+    <!--搜索已经开启选课的选修课-->
+    <select id="selectOpenCourseList" resultType="Map">
+        select course_id, course_code, course_name, teacher_name, course_time, class_room,
+        course_week, course_type, college.college_name, score
+        from course inner join teacher on course.teacher_id = teacher.teacher_id
+        inner join college on course.college_id = college.college_id
+        <where>
+            course_type = '选修课' and is_on = 1 and course_name like '%' #{courseName} '%'
+            and course_id not in(
+            select course_id from select_course where student_id = #{studentId})
+        </where>
+    </select>
+
+    <!--通过课程id获取课程信息-->
+    <select id="getCourseById" resultType="Map">
+        select course.course_id, course_code, course_name, teacher_name,
+               course_time, class_room, course_week, course_type, college.college_name, score
+        from course inner join teacher on course.teacher_id = teacher.teacher_id
+                         inner join college on college.college_id = course.college_id
+            where course.is_on = 1 and course.course_type = "选修课" and course.course_id = #{courseId}
+
+    </select>
+
+</mapper>

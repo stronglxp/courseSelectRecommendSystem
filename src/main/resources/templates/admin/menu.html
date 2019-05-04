@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<div class="col-md-2" th:fragment="menu">
+    <ul class="nav nav-pills nav-stacked" id="nav">
+        <li>
+            <a th:href="@{/admin/course/list}">课程管理
+                <span class="badge pull-right" th:text="${courseNum}">8</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/admin/student/list}">学生管理
+                <span class="badge pull-right" th:text="${studentNum}">59</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/admin/teacher/list}">教师管理
+                <span class="badge pull-right" th:text="${teacherNum}">10</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/admin/college/list}">院系管理
+                <span class="badge pull-right" th:text="${collegeNum}">10</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/admin/userPasswordRest}">账号密码重置
+                <sapn class="glyphicon glyphicon-repeat pull-right" />
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/admin/passwordRest}">修改密码
+                <sapn class="glyphicon glyphicon-pencil pull-right" />
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/logout}">退出系统
+                <sapn class="glyphicon glyphicon-log-out pull-right" />
+            </a>
+        </li>
+        <li class="disabled">
+            <a href="##">Responsive</a>
+        </li>
+    </ul>
+</div>

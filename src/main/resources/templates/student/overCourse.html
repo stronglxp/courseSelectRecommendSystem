@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/static/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/static/css/bootstrap-theme.css}" rel="stylesheet">
+    <link th:href="@{/static/css/bootstrap-switch.css}" rel="stylesheet">
+    <link th:href="@{/static/css/font-awesome.min.css}" rel="stylesheet">
+    <title>已修课程信息</title>
+    <style>
+        a:hover,
+        a:active,
+        a:focus {
+            color: #dab10d;
+        }
+
+        .rating-stars {
+            width: 100%;
+            text-align: center;
+        }
+
+        .rating-stars .rating-stars-container {
+            font-size: 0px;
+        }
+
+        .rating-stars .rating-stars-container .rating-star {
+            display: inline-block;
+            /*font-size: 32px;*/
+            color: #555555;
+            cursor: pointer;
+            /*padding: 5px 10px;*/
+        }
+
+        .rating-stars .rating-stars-container .rating-star.is--active,
+        .rating-stars .rating-stars-container .rating-star.is--hover {
+            color: #f1c40f;
+        }
+
+        .rating-stars .rating-stars-container .rating-star.is--no-hover {
+            color: #555555;
+        }
+
+        .fa-star {
+            font-size: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <!--顶部栏-->
+    <div th:replace="student/top :: html"></div>
+    <!-- 中间主体 -->
+    <div class="container" id="content">
+        <div class="row">
+            <div th:replace="student/menu :: html"></div>
+            <div class="col-md-10">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <h1 class="col-md-4">已修课程</h1>
+                            <form class="bs-example bs-example-form col-md-4" role="form" style="margin: 20px 0 10px
+                                 0;" th:action="@{/student/selectOverCourse}" id="form1" method="post">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="请输入课程名称" name="courseName" required>
+                                    <span class="input-group-btn">
+                                        <input type="submit" class="btn btn-default" value="搜索" />
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>课程id</th>
+                                <th>课程名称</th>
+                                <th>任课教师</th>
+                                <th>开课时间</th>
+                                <th>开课地点</th>
+                                <th>学时</th>
+                                <th>类型</th>
+                                <th>院系</th>
+                                <th>学分</th>
+                                <th>成绩</th>
+                                <th>评价</th>
+                            </tr>
+                        </thead>
+                        <tbody th:if="${#lists.isEmpty(courseList)}">
+                            <tr style="text-align: center; color: red;">
+                                <td colspan="11">没有课程信息</td>
+                            </tr>
+                        </tbody>
+                        <tbody th:if="${not #lists.isEmpty(courseList)}">
+                            <th:block th:each="course:${courseList}">
+                                <tr>
+                                    <!--遍历map-->
+                                    <td th:text="${course['course_code']}">0</td>
+                                    <td th:text="${course['course_name']}">0</td>
+                                    <td th:text="${course['teacher_name']}">0</td>
+                                    <td th:text="${course['course_time']}">0</td>
+                                    <td th:text="${course['class_room']}">0</td>
+                                    <td th:text="${course['course_week']}">0</td>
+                                    <td th:text="${course['course_type']}">0</td>
+                                    <td th:text="${course['college_name']}">0</td>
+                                    <td th:text="${course['score']}">0</td>
+                                    <td th:text="${course['mark']}" style="color: red;">0</td>
+                                    <td>
+                                        <div class="position-relative overflow-hidden p-3 p-md-6 m-md-3 text-center bg-light">
+                                            <div class="p-lg-5 mx-auto my-5">
+                                                <div class="rating-stars block" id="another-rating">
+                                                    <input type="hidden" readonly class="form-control rating-value" name="another-rating-stars-value" id="another-rating-stars-value"
+                                                           th:value="${course['evaluation']}">
+                                                    <div class="rating-stars-container">
+                                                        <div class="rating-star">
+                                                            <i class="fa fa-star"
+                                                               th:onclick="passInfo([[${course['course_id']}]]);"></i>
+                                                        </div>
+                                                        <div class="rating-star">
+                                                            <i class="fa fa-star"
+                                                               th:onclick="passInfo([[${course['course_id']}]]);"></i>
+                                                        </div>
+                                                        <div class="rating-star">
+                                                            <i class="fa fa-star"
+                                                               th:onclick="passInfo([[${course['course_id']}]]);"></i>
+                                                        </div>
+                                                        <div class="rating-star">
+                                                            <i class="fa fa-star"
+                                                               th:onclick="passInfo([[${course['course_id']}]]);"></i>
+                                                        </div>
+                                                        <div class="rating-star">
+                                                            <i class="fa fa-star"
+                                                               th:onclick="passInfo([[${course['course_id']}]]);"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </th:block>
+                        </tbody>
+                    </table>
+                    <div class="panel-footer" th:if="${pageVo}">
+                        <nav style="text-align: center">
+                            <ul class="pagination">
+                                <li>
+                                    <a th:href="@{'/student/over/course/list?page=' + ${pageVo.prePageNo}}">&laquo;
+                                        上一页</a>
+                                </li>
+                                <li class="active">
+                                    <a href="" th:value="${pageVo.currentPageNo}" th:text="${pageVo.currentPageNo}">1</a>
+                                </li>
+
+                                <li th:if="${pageVo.currentPageNo + 1 <= pageVo.totalCount}">
+                                    <a th:href="@{'/student/over/course/list?page=' + ${pageVo.currentPageNo + 1}}"
+                                       th:text="${pageVo.currentPageNo+1}">2</a>
+                                </li>
+                                <li th:if="${pageVo.currentPageNo + 2 <= pageVo.totalCount}">
+                                    <a th:href="@{'/student/over/course/list?page=' + ${pageVo.currentPageNo + 2}}"
+                                       th:text="${pageVo.currentPageNo + 2}">3</a>
+                                </li>
+                                <li th:if="${pageVo.currentPageNo + 3 <= pageVo.totalCount}">
+                                    <a th:href="@{'/student/over/course/list?page=' + ${pageVo.currentPageNo + 3}}"
+                                       th:text="${pageVo.currentPageNo + 3}">4</a>
+                                </li>
+                                <li th:if="${pageVo.currentPageNo + 4 <= pageVo.totalCount}">
+                                    <a th:href="@{'/student/over/course/list?page=' + ${pageVo.currentPageNo + 4}}"
+                                       th:text="${pageVo.currentPageNo + 4}">5</a>
+                                </li>
+                                <li>
+                                    <a th:href="@{'/student/over/course/list?page=' + ${pageVo.totalCount}}">最后一页&raquo;</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" id="footer">
+        <div class="row">
+            <div class="col-md-12"></div>
+        </div>
+    </div>
+
+    <!--消息模态框-->
+    <div class="modal fade" tabindex="-1" role="dialog" id="alertMsg2">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <input type="hidden" name="courseId" id="courseId" value=""/>
+                <div class="modal-body">
+                    <p th:text="${msg}" id="msg2"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="javascript:go2();">关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/static/js/jquery-3.0.0.min.js}"></script>
+    <script th:src="@{/static/js/bootstrap.js}"></script>
+    <script th:src="@{/static/js/bootstrap-switch.js}"></script>
+    <script th:src="@{/static/js/jquery.rating-stars.min.js}"></script>
+    <script th:src="@{/static/js/popper.min.js}"></script>
+    <script th:inline="javascript">
+
+        /*<![CDATA[*/
+
+        $("#nav li:nth-child(3)").addClass("active");
+
+        var msg = /*[[${msg}]]*/ null;
+
+        if(msg != null) {
+            // 显示信息
+            $('#alertMsg2').modal('show');
+        }
+
+        function go2() {
+            window.location.href = "/student/over/course/list";
+        }
+
+        var ratingOptions = {
+            selectors: {
+                starsSelector: '.rating-stars',
+                starSelector: '.rating-star',
+                starActiveClass: 'is--active',
+                starHoverClass: 'is--hover',
+                starNoHoverClass: 'is--no-hover',
+                targetFormElementSelector: '.rating-value'
+            }
+        };
+
+        $(".rating-stars").ratingStars(ratingOptions);
+
+        // 发送评分请求
+        $(".rating-stars").on("ratingChanged", function (ev, data) {
+
+            var courseId = $('#courseId').val();
+            var evaluation = data.ratingValue;
+
+            $.post('/student/evaluation/' + courseId, {evaluation:evaluation},
+                function (data, status) {
+                    if(data == 1 || data == -1) {
+                        // 给模态框赋值
+                        $('#msg2').text('评价失败!');
+                        $('#alertMsg2').modal('show');
+                    }
+                }
+            );
+        });
+
+        function passInfo(course_id) {
+            $('#courseId').val(course_id);
+        }
+
+        /*]]>*/
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codeliu.course_select_system.dao.RoleMapper" >
+
+    <sql id="field">
+        role_name, permissions
+    </sql>
+
+    <!--通过id查找对应的role-->
+    <select id="findById" resultType="com.codeliu.course_select_system.entity.Role">
+        select <include refid="field" />
+        from role where role_id = #{roleId}
+    </select>
+</mapper>

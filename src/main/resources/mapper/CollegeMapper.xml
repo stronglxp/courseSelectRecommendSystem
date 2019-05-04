@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codeliu.course_select_system.dao.CollegeMapper" >
+
+    <!--获取所有的院系信息-->
+    <select id="getCollegeList" resultType="college">
+        select college_id, college_name from college
+    </select>
+
+    <!--获取所有的院系信息，以分页的形式-->
+    <select id="getCollegeListByPage" resultType="Map" parameterType="pageVO">
+        select college_id, college_name from college
+        limit #{toPageNo}, #{pageSize}
+    </select>
+
+    <!--获取院系总数-->
+    <select id="getCountCollege" resultType="int">
+        select count(*) from college
+    </select>
+
+    <!--查看是否有院系id-->
+    <select id="getCollegeById" resultType="int">
+        select college_id from college
+        <where>
+            college_id = #{collegeId}
+        </where>
+    </select>
+
+    <!--院系名搜索院系-->
+    <select id="findByCollName" resultType="Map">
+        select college_id, college_name from college
+        where college_name like '%' #{collegeName} '%'
+    </select>
+
+    <!--添加院系-->
+    <insert id="addCollege">
+        insert into college(college_name) values(#{collegeName})
+    </insert>
+
+    <!--查询院系名称是否重复-->
+    <select id="getCollegeName" resultType="string">
+        select college_name from college
+        <where>
+            college_name = #{collegeName}
+        </where>
+        limit 1
+    </select>
+
+    <!--更新院系信息-->
+    <update id="updateCollege" parameterType="college">
+        update college set college_name = #{collegeName}
+        <where>
+            college_id = #{collegeId}
+        </where>
+    </update>
+
+    <!--通过院系名称查询院系id-->
+    <select id="getCollegeByName" resultType="int">
+        select college_id from college
+        <where>
+            college_name = #{collegeName}
+        </where>
+    </select>
+</mapper>

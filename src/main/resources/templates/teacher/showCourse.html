@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/static/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/static/css/bootstrap-theme.css}" rel="stylesheet">
+    <link th:href="@{/static/css/bootstrap-switch.css}" rel="stylesheet">
+    <title>课程信息</title>
+</head>
+<body>
+    <!--顶部栏-->
+    <div th:replace="teacher/top :: html"></div>
+    <!-- 中间主体 -->
+    <div class="container" id="content">
+        <div class="row">
+            <div th:replace="teacher/menu :: html"></div>
+            <div class="col-md-10">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <h1 class="col-md-4">我教授的课程</h1>
+                            <form class="bs-example bs-example-form col-md-4" role="form" style="margin: 20px 0 10px
+                                 0;" th:action="@{/teacher/selectCourse}" id="form1" method="post">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="请输入课程名称" name="courseName" required>
+                                    <span class="input-group-btn">
+                                        <input type="submit" class="btn btn-default" value="搜索" />
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>课程号</th>
+                                <th>课程名称</th>
+                                <th>上课时间</th>
+                                <th>上课地点</th>
+                                <th>周数</th>
+                                <th>课程类型</th>
+                                <th>所属学院</th>
+                                <th>学分</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody th:if="${#lists.isEmpty(courseList)}">
+                            <tr style="text-align: center; color: red;">
+                                <td colspan="9">没有课程信息</td>
+                            </tr>
+                        </tbody>
+                        <tbody th:if="${not #lists.isEmpty(courseList)}">
+                            <th:block th:each="course:${courseList}">
+                                <tr>
+                                    <!--遍历map-->
+                                    <td th:text="${course['course_code']}">0</td>
+                                    <td th:text="${course['course_name']}">0</td>
+                                    <td th:text="${course['course_time']}">0</td>
+                                    <td th:text="${course['class_room']}">0</td>
+                                    <td th:text="${course['course_week']}">0</td>
+                                    <td th:text="${course['course_type']}">0</td>
+                                    <td th:text="${course['college_name']}">0</td>
+                                    <td th:text="${course['score']}">0</td>
+                                    <td>
+                                        <button class="btn btn-default btn-xs btn-info">
+                                            <a th:href="@{'/teacher/mark/list?courseId=' + ${course['course_id']}}"
+                                               style="text-decoration: none; color: white; font-weight: lighter">成绩</a>
+                                        </button>
+                                        <!--弹出框-->
+                                    </td>
+                                </tr>
+                            </th:block>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" id="footer">
+        <div class="row">
+            <div class="col-md-12"></div>
+        </div>
+    </div>
+
+    <script th:src="@{/static/js/jquery-3.0.0.min.js}"></script>
+    <script th:src="@{/static/js/bootstrap.js}"></script>
+    <script th:src="@{/static/js/bootstrap-switch.js}"></script>
+    <script th:inline="javascript">
+
+        /*<![CDATA[*/
+
+        $("#nav li:nth-child(1)").addClass("active");
+
+        /*]]>*/
+
+    </script>
+</body>
+</html>

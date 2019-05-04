@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<div class="col-md-2" th:fragment="menu">
+    <ul class="nav nav-pills nav-stacked" id="nav">
+        <li>
+            <a th:href="@{/student/course/list}">可选课程
+                <span class="badge pull-right" th:text="${courseNum}">8</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/student/select/course/list}">已选课程
+                <span class="badge pull-right" th:text="${selectCourseNum}">59</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/student/over/course/list}">已修课程
+                <span class="badge pull-right" th:text="${overCourseNum}">10</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/student/evaluate/course/list}">推荐课程
+                <span class="badge pull-right" th:text="${recommendCourseNum}">10</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/student/passwordRest}">修改密码
+                <sapn class="glyphicon glyphicon-pencil pull-right" />
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/logout}">退出系统
+                <sapn class="glyphicon glyphicon-log-out pull-right" />
+            </a>
+        </li>
+        <li class="disabled">
+            <a href="##">Responsive</a>
+        </li>
+    </ul>
+</div>
