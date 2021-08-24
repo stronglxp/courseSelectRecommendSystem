@@ -3,10 +3,12 @@
 ### 0、体验账号
 
 管理员：admin  123456
+
 教师：JS1001  123456
+
 学生：B15041212  123456
 
-### 1.使用的技术
+### 1、使用的技术
 后端：SpringBoot + MyBatis + Shiro
 
 前端：BootStrap 
@@ -19,7 +21,7 @@
 
 推荐算法：协同过滤推荐算法。基于学生的成绩、对课程的评分以及课程之间的关联等因素，再通过一定的计算公式实现推荐。
 
-### 2.角色分类
+### 2、角色分类
 ![登录页面](https://github.com/stronglxp/courseSelectRecommendSystem/blob/master/src/main/resources/static/images/%E7%99%BB%E5%BD%95.png)
 ##### 2.1 管理员
 ![学生管理](https://github.com/stronglxp/courseSelectRecommendSystem/blob/master/src/main/resources/static/images/%E5%AD%A6%E7%94%9F%E7%AE%A1%E7%90%86.png)
