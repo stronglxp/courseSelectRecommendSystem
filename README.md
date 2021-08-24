@@ -9,7 +9,9 @@
 
 数据库：MySQL 
 
-项目构建构建：Maven 
+项目构建构建：Maven
+
+推荐算法：协同过滤推荐算法。基于学生的成绩、对课程的评分以及课程之间的关联等因素，再通过一定的计算公式实现推荐。
 
 ### 2.角色分类
 ![登录页面](https://github.com/stronglxp/courseSelectRecommendSystem/blob/master/src/main/resources/static/images/%E7%99%BB%E5%BD%95.png)
@@ -28,3 +30,11 @@
 ![学生](https://github.com/stronglxp/courseSelectRecommendSystem/blob/master/src/main/resources/static/images/%E5%AD%A6%E7%94%9F.png)
 ![按人数推荐](https://github.com/stronglxp/courseSelectRecommendSystem/blob/master/src/main/resources/static/images/%E6%8C%89%E4%BA%BA%E6%95%B0.png)
 ![综合推荐](https://github.com/stronglxp/courseSelectRecommendSystem/blob/master/src/main/resources/static/images/%E7%BB%BC%E5%90%88%E6%8E%A8%E8%8D%90.png)
+
+### 3、写在后面
+
+这是好几年前写的代码了，如果有很挫的地方，大家不要介意啦。
+
+#### 另外可以关注我的公众号【秃头哥编程】，佛系更新。
+
+<img src="https://i.ibb.co/5K4Ty8B/image.webp">
